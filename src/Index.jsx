@@ -5,8 +5,9 @@ import './App.css'
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
+import { useForm } from "react-hook-form";
 
-function Index() {
+function Index({fromHome}) {
   const [tasks, setTasks] = useState([]);
   const [name, setName ] = useState('');
   const [desc, setDesc ] = useState('');
@@ -17,7 +18,7 @@ function Index() {
 
   useEffect(() => {
     fetchTasks();
-  }, [name]);
+  }, [search]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -55,7 +56,12 @@ function Index() {
   }
   };
 
-  
+  const handleEdit = (task) => { 
+    setName(task.task_name);
+    setDesc(task.task_desc);
+    setSheduledDate(task.scheduled_date);
+    setDuration(task.duration);
+  };
     const filteredTasks = tasks.filter(task =>
         task.task_name.toLowerCase().includes(debouncedTerm.toLowerCase())
       );
@@ -79,6 +85,7 @@ function Index() {
           </div>
         </div>
         <div className='col'>
+          {fromHome}
           <input type='text' className='form-control w-100' placeholder='Search..' value={search} onChange={(e) => setSearch(e.target.value)}/>
           <div className='d-flex flex-wrap justify-content-start text-left'>
             {filteredTasks.map((task) => 
@@ -88,15 +95,13 @@ function Index() {
                 <p>{task.task_desc}</p>
                 <p>{task.scheduled_date}</p>
                 <p>{task.duration} minutes</p>
+                <button onClick={() => handleEdit(task)}>Duplicate Task</button>
               </div>
             </div>
             )}
           </div>
         </div>
       </div>
-      
-
-    
     </div>
       
     </>
